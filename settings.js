@@ -196,14 +196,13 @@
 
       const setLeaderboardStatus = (meta = {}) => {
         if (!leaderboardStatus) return;
-        const serverConnected = meta.mode === "server" && meta.connected;
+        const isConnected = Boolean(meta.connected);
         leaderboardStatus.classList.remove("online", "local");
-        if (serverConnected) {
-          leaderboardStatus.textContent = "Realtime: Vercel API connected";
+        if (isConnected) {
+          leaderboardStatus.textContent = "Realtime: live on this browser (tabs sync)";
           leaderboardStatus.classList.add("online");
         } else {
-          leaderboardStatus.textContent =
-            "Realtime: local mode (API unavailable)";
+          leaderboardStatus.textContent = "Realtime: offline";
           leaderboardStatus.classList.add("local");
         }
       };
