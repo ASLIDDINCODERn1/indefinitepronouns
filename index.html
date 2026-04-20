@@ -114,6 +114,7 @@
           <h3 class="leaderboard-title">Leaderboard <span class="live-pill">LIVE</span></h3>
           <span class="muted">Each attempt is saved separately by username, score, and completion time.</span>
         </div>
+        <p id="leaderboardStatus" class="lb-status">Connecting realtime leaderboard...</p>
         <div id="leaderboardList" class="leaderboard-list"></div>
       </section>
     </main>
@@ -129,19 +130,10 @@
       </div>
     </div>
 
-    <nav class="bottom-taskbar" aria-label="Quick actions">
-      <a href="test.html" class="task-item active"><span class="task-ico">📝</span> Test</a>
-      <button id="taskSettingsBtn" class="task-item" type="button"><span class="task-ico">⚙️</span> Settings</button>
-      <div class="task-item task-theme">
-        <span><span class="task-ico">🌗</span> Theme</span>
-        <label class="ios-switch mini" for="taskThemeSwitch">
-          <input id="taskThemeSwitch" type="checkbox" />
-          <span class="ios-slider"></span>
-        </label>
-      </div>
-    </nav>
   </div>
 
+  <script src="realtime-config.js"></script>
+  <script src="leaderboard-realtime.js"></script>
   <script src="settings.js"></script>
 </body>
 </html>

@@ -1,8 +1,6 @@
 (function () {
   const KEY = "minitest.settings";
   const USER_KEY = "minitest.username";
-  const LEADERBOARD_KEY = "minitest.leaderboard";
-  const LEADERBOARD_CHANNEL = "minitest.leaderboard.channel";
   const defaults = {
     theme: "light",
     fontSize: 16,
@@ -36,7 +34,6 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     const settingsToggle = document.getElementById("settingsToggle");
-    const taskSettingsBtn = document.getElementById("taskSettingsBtn");
     const settingsPanel = document.getElementById("settingsPanel");
     const closeSettings = document.getElementById("closeSettings");
     const fontSize = document.getElementById("fontSize");
@@ -44,15 +41,11 @@
     const fontFamily = document.getElementById("fontFamily");
     const themeToggle = document.getElementById("themeToggle");
     const themeSwitch = document.getElementById("themeSwitch");
-    const taskThemeSwitch = document.getElementById("taskThemeSwitch");
     const quizDuration = document.getElementById("quizDuration");
     const resetBtn = document.getElementById("resetBtn");
     const durationBadge = document.getElementById("durationBadge");
     const leaderboardList = document.getElementById("leaderboardList");
-    const leaderboardChannel =
-      typeof window.BroadcastChannel === "function"
-        ? new window.BroadcastChannel(LEADERBOARD_CHANNEL)
-        : null;
+    const leaderboardStatus = document.getElementById("leaderboardStatus");
 
     function syncDurationBadge() {
       if (durationBadge) durationBadge.textContent = `Time: ${state.quizDuration} min`;
@@ -61,7 +54,6 @@
     function syncThemeButtons() {
       const isDark = state.theme === "dark";
       if (themeSwitch) themeSwitch.checked = isDark;
-      if (taskThemeSwitch) taskThemeSwitch.checked = isDark;
     }
 
     function closePanel() {
@@ -78,7 +70,6 @@
     }
 
     if (settingsToggle && settingsPanel) settingsToggle.addEventListener("click", toggleSettingsPanel);
-    if (taskSettingsBtn && settingsPanel) taskSettingsBtn.addEventListener("click", toggleSettingsPanel);
 
     if (closeSettings) closeSettings.addEventListener("click", closePanel);
 
@@ -119,14 +110,6 @@
     if (themeSwitch) {
       themeSwitch.addEventListener("change", () => {
         state.theme = themeSwitch.checked ? "dark" : "light";
-        apply(state);
-        syncThemeButtons();
-        save(state);
-      });
-    }
-    if (taskThemeSwitch) {
-      taskThemeSwitch.addEventListener("change", () => {
-        state.theme = taskThemeSwitch.checked ? "dark" : "light";
         apply(state);
         syncThemeButtons();
         save(state);
@@ -201,39 +184,39 @@
     }
 
     if (leaderboardList) {
-      const readRecords = () => {
-        try {
-          const parsed = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || "[]");
-          return Array.isArray(parsed) ? parsed : [];
-        } catch {
-          return [];
+      const leaderboardApi = window.MiniTestLeaderboard;
+      const sortRecords = (records) =>
+        [...records].sort(
+          (a, b) =>
+            Number(b.score || 0) - Number(a.score || 0) ||
+            Number(a.elapsedSeconds || Number.MAX_SAFE_INTEGER) -
+              Number(b.elapsedSeconds || Number.MAX_SAFE_INTEGER) ||
+            Number(b.finishedAtMs || 0) - Number(a.finishedAtMs || 0),
+        );
+
+      const setLeaderboardStatus = (meta = {}) => {
+        if (!leaderboardStatus) return;
+        const serverConnected = meta.mode === "server" && meta.connected;
+        leaderboardStatus.classList.remove("online", "local");
+        if (serverConnected) {
+          leaderboardStatus.textContent = "Realtime: Vercel API connected";
+          leaderboardStatus.classList.add("online");
+        } else {
+          leaderboardStatus.textContent =
+            "Realtime: local mode (API unavailable)";
+          leaderboardStatus.classList.add("local");
         }
       };
 
-      const getFinishedAtMs = (item) => {
-        if (Number.isFinite(item.finishedAtMs)) return item.finishedAtMs;
-        const parsed = Date.parse(item.finishedAt || "");
-        return Number.isFinite(parsed) ? parsed : 0;
-      };
-
-      const renderLeaderboard = () => {
-        const records = readRecords()
-          .sort(
-            (a, b) =>
-              Number(b.score || 0) - Number(a.score || 0) ||
-              Number(a.elapsedSeconds || Number.MAX_SAFE_INTEGER) -
-                Number(b.elapsedSeconds || Number.MAX_SAFE_INTEGER) ||
-              getFinishedAtMs(b) - getFinishedAtMs(a),
-          )
-          .slice(0, 50);
-
+      const renderLeaderboard = (records = []) => {
+        const sorted = sortRecords(Array.isArray(records) ? records : []).slice(0, 50);
         leaderboardList.innerHTML = "";
-        if (!records.length) {
+        if (!sorted.length) {
           leaderboardList.innerHTML = `<p class="muted">No attempts yet.</p>`;
           return;
         }
 
-        records.forEach((item, idx) => {
+        sorted.forEach((item, idx) => {
           const row = document.createElement("article");
           row.className = "leaderboard-item";
 
@@ -261,29 +244,15 @@
         });
       };
 
-      renderLeaderboard();
-
-      window.addEventListener("storage", (event) => {
-        if (event.key === LEADERBOARD_KEY) renderLeaderboard();
-      });
-
-      if (leaderboardChannel) {
-        leaderboardChannel.addEventListener("message", (event) => {
-          if (event.data && event.data.type === "leaderboard:update") {
-            renderLeaderboard();
-          }
+      if (leaderboardApi && typeof leaderboardApi.subscribe === "function") {
+        leaderboardApi.subscribe((records, meta) => {
+          renderLeaderboard(records);
+          setLeaderboardStatus(meta);
         });
+      } else {
+        setLeaderboardStatus({ mode: "local", connected: false });
+        renderLeaderboard([]);
       }
-    }
-
-    if (leaderboardChannel) {
-      window.addEventListener(
-        "beforeunload",
-        () => {
-          leaderboardChannel.close();
-        },
-        { once: true },
-      );
     }
   });
 })();

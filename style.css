@@ -162,7 +162,7 @@ body::after {
 
 .container {
   width: min(1140px, calc(100% - 24px));
-  margin: 20px auto 110px;
+  margin: 20px auto 26px;
   display: grid;
   gap: 18px;
 }
@@ -543,6 +543,21 @@ input[type="range"] {
   align-items: center;
 }
 
+.lb-status {
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.lb-status.online {
+  color: color-mix(in srgb, var(--accent) 84%, var(--text));
+}
+
+.lb-status.local {
+  color: color-mix(in srgb, var(--warning) 78%, var(--text));
+}
+
 .leaderboard-title {
   margin: 0;
   display: inline-flex;
@@ -766,56 +781,6 @@ input[type="range"] {
   color: color-mix(in srgb, var(--accent) 70%, var(--primary));
 }
 
-.bottom-taskbar {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 10px;
-  width: min(820px, calc(100% - 18px));
-  z-index: 30;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
-  box-shadow: var(--shadow-soft);
-  backdrop-filter: blur(15px);
-  padding: 7px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.2fr;
-  gap: 7px;
-}
-
-.task-item {
-  min-height: 42px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface-muted) 88%, transparent);
-  color: var(--text);
-  text-decoration: none;
-  font: inherit;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.task-item.active {
-  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
-  background: color-mix(in srgb, var(--primary) 14%, var(--surface-muted));
-}
-
-.task-theme {
-  justify-content: space-between;
-  padding: 0 10px;
-}
-
-.task-ico {
-  display: inline-flex;
-  width: 18px;
-  justify-content: center;
-}
-
 .hidden {
   display: none !important;
 }
@@ -881,17 +846,4 @@ input[type="range"] {
     grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
-  .bottom-taskbar {
-    width: calc(100% - 8px);
-    bottom: 4px;
-    border-radius: 14px;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 6px;
-    padding: 6px;
-  }
-
-  .task-item {
-    min-height: 37px;
-    font-size: 0.84rem;
-  }
 }

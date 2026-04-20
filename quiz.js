@@ -2,7 +2,6 @@
   const SETTINGS_KEY = "minitest.settings";
   const USER_KEY = "minitest.username";
   const LEADERBOARD_KEY = "minitest.leaderboard";
-  const LEADERBOARD_CHANNEL = "minitest.leaderboard.channel";
 
   const username = localStorage.getItem(USER_KEY);
   if (!username) {
@@ -265,14 +264,13 @@
     return `entry-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
   }
 
-  function publishLeaderboardUpdate() {
-    if (typeof window.BroadcastChannel !== "function") return;
-    const channel = new window.BroadcastChannel(LEADERBOARD_CHANNEL);
-    channel.postMessage({ type: "leaderboard:update" });
-    channel.close();
-  }
-
   function saveLeaderboard(entry) {
+    const leaderboardApi = window.MiniTestLeaderboard;
+    if (leaderboardApi && typeof leaderboardApi.saveEntry === "function") {
+      leaderboardApi.saveEntry(entry);
+      return;
+    }
+
     let data = [];
     try {
       const parsed = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || "[]");
@@ -282,6 +280,5 @@
     }
     data.push(entry);
     localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(data));
-    publishLeaderboardUpdate();
   }
 })();
