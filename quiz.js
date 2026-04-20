@@ -2,6 +2,7 @@
   const SETTINGS_KEY = "minitest.settings";
   const USER_KEY = "minitest.username";
   const LEADERBOARD_KEY = "minitest.leaderboard";
+  const LEADERBOARD_CHANNEL = "minitest.leaderboard.channel";
 
   const username = localStorage.getItem(USER_KEY);
   if (!username) {
@@ -63,7 +64,7 @@
     { type: "mcq", level: "Advanced", q: "Under these constraints, _____ can guarantee zero risk.", options: ["nobody", "anybody", "somebody", "everyone"], answer: "nobody" },
     { type: "text", level: "Advanced", q: "Fill in: 'If _____ raises an objection, the vote will be postponed.'", answer: "anyone" },
     { type: "mcq", level: "Advanced", q: "I searched the archive _____, yet the original memo was absent.", options: ["everywhere", "everyone", "everything", "something"], answer: "everywhere" },
-    { type: "text", level: "Advanced", q: "Final challenge: 'In legal English, _____ may be interpreted as implied consent only in specific contexts.'", answer: "silence" }
+    { type: "text", level: "Advanced", q: "Final challenge: 'When negotiating, _____ should feel pressured to sign immediately.'", answer: "nobody" }
   ];
 
   const settings = loadSettings();
@@ -138,7 +139,8 @@
     questions.forEach((item, i) => {
       const row = document.createElement("p");
       row.className = "preview-item";
-      row.textContent = `${i + 1}. (${item.level}) ${item.q}`;
+      const typeLabel = item.type === "text" ? "Type" : "MCQ";
+      row.textContent = `${i + 1}. (${item.level} • ${typeLabel}) ${item.q}`;
       questionPreview.appendChild(row);
     });
   }
@@ -245,23 +247,41 @@
     resultMeta.textContent = `User: ${username} | Time used: ${formatTime(usedSeconds)} | Timer setting: ${durationMinutes} min`;
 
     saveLeaderboard({
+      id: createEntryId(),
       username,
       score,
       total: questions.length,
       elapsedSeconds: usedSeconds,
       elapsedLabel: formatTime(usedSeconds),
       finishedAt: new Date().toLocaleString(),
+      finishedAtMs: Date.now(),
     });
+  }
+
+  function createEntryId() {
+    if (window.crypto && typeof window.crypto.randomUUID === "function") {
+      return window.crypto.randomUUID();
+    }
+    return `entry-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+
+  function publishLeaderboardUpdate() {
+    if (typeof window.BroadcastChannel !== "function") return;
+    const channel = new window.BroadcastChannel(LEADERBOARD_CHANNEL);
+    channel.postMessage({ type: "leaderboard:update" });
+    channel.close();
   }
 
   function saveLeaderboard(entry) {
     let data = [];
     try {
-      data = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || "[]");
+      const parsed = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || "[]");
+      data = Array.isArray(parsed) ? parsed : [];
     } catch {
       data = [];
     }
     data.push(entry);
     localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(data));
+    publishLeaderboardUpdate();
   }
 })();

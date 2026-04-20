@@ -2,10 +2,11 @@
   const KEY = "minitest.settings";
   const USER_KEY = "minitest.username";
   const LEADERBOARD_KEY = "minitest.leaderboard";
+  const LEADERBOARD_CHANNEL = "minitest.leaderboard.channel";
   const defaults = {
     theme: "light",
     fontSize: 16,
-    fontFamily: "system-ui, sans-serif",
+    fontFamily: "'Plus Jakarta Sans', 'Segoe UI', sans-serif",
     quizDuration: 50,
   };
 
@@ -47,6 +48,11 @@
     const quizDuration = document.getElementById("quizDuration");
     const resetBtn = document.getElementById("resetBtn");
     const durationBadge = document.getElementById("durationBadge");
+    const leaderboardList = document.getElementById("leaderboardList");
+    const leaderboardChannel =
+      typeof window.BroadcastChannel === "function"
+        ? new window.BroadcastChannel(LEADERBOARD_CHANNEL)
+        : null;
 
     function syncDurationBadge() {
       if (durationBadge) durationBadge.textContent = `Time: ${state.quizDuration} min`;
@@ -89,6 +95,12 @@
 
     if (fontFamily) {
       fontFamily.value = state.fontFamily;
+      if (!fontFamily.value) {
+        state.fontFamily = defaults.fontFamily;
+        fontFamily.value = state.fontFamily;
+        apply(state);
+        save(state);
+      }
       fontFamily.addEventListener("change", () => {
         state.fontFamily = fontFamily.value;
         apply(state);
@@ -151,6 +163,10 @@
     const usernameInput = document.getElementById("usernameInput");
     const saveUsernameBtn = document.getElementById("saveUsernameBtn");
 
+    function normalizeUsername(value) {
+      return value.replace(/\s+/g, " ").trim().slice(0, 24);
+    }
+
     function openUsernameModal() {
       if (!usernameModal) return;
       usernameModal.classList.remove("hidden");
@@ -164,7 +180,7 @@
 
     function saveUsername() {
       if (!usernameInput) return;
-      const name = usernameInput.value.trim();
+      const name = normalizeUsername(usernameInput.value);
       if (!name) return;
       localStorage.setItem(USER_KEY, name);
       closeUsernameModal();
@@ -173,6 +189,10 @@
     if (usernameModal && !localStorage.getItem(USER_KEY)) {
       openUsernameModal();
     }
+    if (usernameInput) {
+      const savedUsername = localStorage.getItem(USER_KEY);
+      if (savedUsername) usernameInput.value = savedUsername;
+    }
     if (saveUsernameBtn) saveUsernameBtn.addEventListener("click", saveUsername);
     if (usernameInput) {
       usernameInput.addEventListener("keydown", (e) => {
@@ -180,34 +200,90 @@
       });
     }
 
-    const leaderboardList = document.getElementById("leaderboardList");
     if (leaderboardList) {
-      let records = [];
-      try {
-        records = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || "[]");
-      } catch {
-        records = [];
-      }
+      const readRecords = () => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      };
 
-      if (!records.length) {
-        leaderboardList.innerHTML = `<p class="muted">No attempts yet.</p>`;
-      } else {
-        records
-          .sort((a, b) => b.score - a.score || a.elapsedSeconds - b.elapsedSeconds)
-          .slice(0, 20)
-          .forEach((item, idx) => {
-            const row = document.createElement("article");
-            row.className = "leaderboard-item";
-            row.innerHTML = `
-              <div class="leaderboard-head">
-                <strong>#${idx + 1} ${item.username}</strong>
-                <span>${item.score}/50</span>
-              </div>
-              <div class="muted">Time: ${item.elapsedLabel} | ${item.finishedAt}</div>
-            `;
-            leaderboardList.appendChild(row);
-          });
+      const getFinishedAtMs = (item) => {
+        if (Number.isFinite(item.finishedAtMs)) return item.finishedAtMs;
+        const parsed = Date.parse(item.finishedAt || "");
+        return Number.isFinite(parsed) ? parsed : 0;
+      };
+
+      const renderLeaderboard = () => {
+        const records = readRecords()
+          .sort(
+            (a, b) =>
+              Number(b.score || 0) - Number(a.score || 0) ||
+              Number(a.elapsedSeconds || Number.MAX_SAFE_INTEGER) -
+                Number(b.elapsedSeconds || Number.MAX_SAFE_INTEGER) ||
+              getFinishedAtMs(b) - getFinishedAtMs(a),
+          )
+          .slice(0, 50);
+
+        leaderboardList.innerHTML = "";
+        if (!records.length) {
+          leaderboardList.innerHTML = `<p class="muted">No attempts yet.</p>`;
+          return;
+        }
+
+        records.forEach((item, idx) => {
+          const row = document.createElement("article");
+          row.className = "leaderboard-item";
+
+          const head = document.createElement("div");
+          head.className = "leaderboard-head";
+
+          const title = document.createElement("strong");
+          title.textContent = `#${idx + 1} ${item.username || "Unknown"}`;
+
+          const score = document.createElement("span");
+          const total = Number(item.total) || 50;
+          score.textContent = `${Number(item.score || 0)}/${total}`;
+
+          const meta = document.createElement("div");
+          meta.className = "muted";
+          const elapsedLabel = item.elapsedLabel || "--:--";
+          const finishedAt = item.finishedAt || "Unknown finish time";
+          meta.textContent = `Time: ${elapsedLabel} | ${finishedAt}`;
+
+          head.appendChild(title);
+          head.appendChild(score);
+          row.appendChild(head);
+          row.appendChild(meta);
+          leaderboardList.appendChild(row);
+        });
+      };
+
+      renderLeaderboard();
+
+      window.addEventListener("storage", (event) => {
+        if (event.key === LEADERBOARD_KEY) renderLeaderboard();
+      });
+
+      if (leaderboardChannel) {
+        leaderboardChannel.addEventListener("message", (event) => {
+          if (event.data && event.data.type === "leaderboard:update") {
+            renderLeaderboard();
+          }
+        });
       }
+    }
+
+    if (leaderboardChannel) {
+      window.addEventListener(
+        "beforeunload",
+        () => {
+          leaderboardChannel.close();
+        },
+        { once: true },
+      );
     }
   });
 })();

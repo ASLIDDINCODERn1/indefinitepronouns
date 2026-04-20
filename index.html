@@ -3,105 +3,144 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MiniTest — Indefinite Pronouns</title>
+  <title>MiniTest - Indefinite Pronouns</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="topbar">
-    <h1 class="logo">✨ MiniTest</h1>
-    <div class="topbar-actions">
-      <button id="themeToggle" class="icon-btn theme-toggle" title="Toggle theme" aria-label="Toggle theme">
-        <span id="themeToggleIcon">🌙</span>
-      </button>
-      <button id="settingsToggle" class="icon-btn" title="Settings" aria-label="Open settings">⚙️</button>
-    </div>
-  </header>
-
-  <aside id="settingsPanel" class="settings-panel hidden" aria-hidden="true">
-    <div class="settings-header">
-      <h2>⚙️ Settings</h2>
-      <button id="closeSettings" class="icon-btn" title="Close settings" aria-label="Close settings">✕</button>
-    </div>
-    <div class="settings">
-      <div class="field">
-        <label for="fontSize">Font size</label>
-        <div class="row">
-          <input id="fontSize" type="range" min="13" max="24" step="1" />
-          <span id="fontSizeValue" class="value">16px</span>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand-group">
+        <div class="logo-mark">MT</div>
+        <div>
+          <h1 class="logo">MiniTest</h1>
+          <p class="logo-sub">Indefinite Pronouns Lab</p>
         </div>
       </div>
-      <div class="field">
-        <label for="fontFamily">Font style</label>
-        <select id="fontFamily">
-          <option value="system-ui, sans-serif">System Sans</option>
-          <option value="'Segoe UI', Tahoma, sans-serif">Segoe UI</option>
-          <option value="-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif">iOS style</option>
-          <option value="Georgia, 'Times New Roman', serif">Georgia</option>
-        </select>
+      <div class="topbar-actions">
+        <button id="themeToggle" class="icon-btn theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+          <span id="themeToggleIcon">🌙</span>
+        </button>
+        <button id="settingsToggle" class="icon-btn" title="Settings" aria-label="Open settings">⚙️</button>
       </div>
-      <div class="field">
-        <label>Theme</label>
-        <div class="ios-switch-row">
-          <span>Light / Dark</span>
-          <label class="ios-switch" for="themeSwitch">
-            <input id="themeSwitch" type="checkbox" />
-            <span class="ios-slider"></span>
-          </label>
+    </header>
+
+    <aside id="settingsPanel" class="settings-panel hidden" aria-hidden="true">
+      <div class="settings-header">
+        <h2>Settings</h2>
+        <button id="closeSettings" class="icon-btn" title="Close settings" aria-label="Close settings">✕</button>
+      </div>
+      <div class="settings">
+        <div class="field">
+          <label for="fontSize">Font size</label>
+          <div class="row">
+            <input id="fontSize" type="range" min="13" max="24" step="1" />
+            <span id="fontSizeValue" class="value">16px</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fontFamily">Font style</label>
+          <select id="fontFamily">
+            <option value="'Plus Jakarta Sans', 'Segoe UI', sans-serif">Jakarta Sans</option>
+            <option value="'Outfit', 'Segoe UI', sans-serif">Outfit</option>
+            <option value="'Source Serif 4', Georgia, serif">Source Serif 4</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Theme</label>
+          <div class="ios-switch-row">
+            <span>Light / Dark</span>
+            <label class="ios-switch" for="themeSwitch">
+              <input id="themeSwitch" type="checkbox" />
+              <span class="ios-slider"></span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="quizDuration">Timer</label>
+          <select id="quizDuration">
+            <option value="50">50 minutes (default)</option>
+            <option value="60">60 minutes</option>
+          </select>
+        </div>
+        <button id="resetBtn" class="btn ghost">Reset Settings</button>
+      </div>
+    </aside>
+
+    <main class="container">
+      <section class="card hero-card">
+        <div class="hero-layout">
+          <div class="hero-copy">
+            <p class="chip">English Grammar Sprint</p>
+            <h2>Indefinite Pronouns Master Test</h2>
+            <p class="muted">
+              Challenge yourself with 50 progressively harder questions in a clean test flow.
+              Timer is 50 minutes by default, and you can switch to 60 minutes from the settings icon.
+            </p>
+            <div class="hero-stats">
+              <div class="stat-pill">
+                <strong>50</strong>
+                <span>Questions</span>
+              </div>
+              <div class="stat-pill">
+                <strong>MCQ + Type</strong>
+                <span>Mixed Format</span>
+              </div>
+              <div class="stat-pill">
+                <strong>Live</strong>
+                <span>Leaderboard</span>
+              </div>
+            </div>
+            <div class="actions">
+              <a href="test.html" class="btn primary"><span class="btn-icon">🚀</span> Start Challenge</a>
+            </div>
+          </div>
+
+          <aside class="hero-panel">
+            <h3>How It Works</h3>
+            <div class="feature-list">
+              <p><strong>1.</strong> Enter your username and open the test.</p>
+              <p><strong>2.</strong> Review all questions before starting the timer.</p>
+              <p><strong>3.</strong> Finish and appear on the realtime leaderboard.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="card leaderboard-card">
+        <div class="leaderboard-headline">
+          <h3 class="leaderboard-title">Leaderboard <span class="live-pill">LIVE</span></h3>
+          <span class="muted">Each attempt is saved separately by username, score, and completion time.</span>
+        </div>
+        <div id="leaderboardList" class="leaderboard-list"></div>
+      </section>
+    </main>
+
+    <div id="usernameModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="usernameTitle">
+      <div class="modal-card">
+        <h3 id="usernameTitle">Welcome to MiniTest</h3>
+        <p class="muted">Please enter your username to continue.</p>
+        <input id="usernameInput" class="text-input" type="text" maxlength="24" placeholder="e.g. Alex" />
+        <div class="actions">
+          <button id="saveUsernameBtn" class="btn primary"><span class="btn-icon">✅</span> Continue</button>
         </div>
       </div>
-      <div class="field">
-        <label for="quizDuration">Timer</label>
-        <select id="quizDuration">
-          <option value="50">50 minutes (default)</option>
-          <option value="60">60 minutes</option>
-        </select>
-      </div>
-      <button id="resetBtn" class="btn ghost">♻️ Reset Settings</button>
     </div>
-  </aside>
 
-  <main class="container">
-    <section class="card hero-card">
-      <p class="chip">📘 English Grammar Challenge</p>
-      <h2>🧠 Indefinite Pronouns Test</h2>
-      <p class="muted">
-        50 questions, increasing difficulty, mixed formats (multiple choice + typing).
-        Timer is 50 minutes by default and can be changed to 60 minutes in settings.
-      </p>
-      <div class="actions">
-        <a href="test.html" class="btn primary"><span class="btn-icon">🚀</span> Go to Test</a>
+    <nav class="bottom-taskbar" aria-label="Quick actions">
+      <a href="test.html" class="task-item active"><span class="task-ico">📝</span> Test</a>
+      <button id="taskSettingsBtn" class="task-item" type="button"><span class="task-ico">⚙️</span> Settings</button>
+      <div class="task-item task-theme">
+        <span><span class="task-ico">🌗</span> Theme</span>
+        <label class="ios-switch mini" for="taskThemeSwitch">
+          <input id="taskThemeSwitch" type="checkbox" />
+          <span class="ios-slider"></span>
+        </label>
       </div>
-    </section>
-
-    <section class="card">
-      <h3>🏆 Leaderboard</h3>
-      <p class="muted">Each attempt is saved separately with username, score, and finish time.</p>
-      <div id="leaderboardList" class="leaderboard-list"></div>
-    </section>
-  </main>
-
-  <div id="usernameModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="usernameTitle">
-    <div class="modal-card">
-      <h3 id="usernameTitle">👋 Welcome to MiniTest</h3>
-      <p class="muted">Please enter your username to continue.</p>
-      <input id="usernameInput" class="text-input" type="text" maxlength="24" placeholder="e.g. Dilshod" />
-      <div class="actions">
-        <button id="saveUsernameBtn" class="btn primary"><span class="btn-icon">✅</span> Continue</button>
-      </div>
-    </div>
+    </nav>
   </div>
-
-  <nav class="bottom-taskbar" aria-label="Quick actions">
-    <a href="test.html" class="task-item active"><span class="task-ico">📝</span> Test</a>
-    <button id="taskSettingsBtn" class="task-item" type="button"><span class="task-ico">⚙️</span> Settings</button>
-    <div class="task-item task-theme">
-      <span><span class="task-ico">🌗</span> Theme</span>
-      <label class="ios-switch mini" for="taskThemeSwitch">
-        <input id="taskThemeSwitch" type="checkbox" />
-        <span class="ios-slider"></span>
-      </label>
-    </div>
-  </nav>
 
   <script src="settings.js"></script>
 </body>
