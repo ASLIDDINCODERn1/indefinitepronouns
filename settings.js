@@ -197,10 +197,14 @@
       const setLeaderboardStatus = (meta = {}) => {
         if (!leaderboardStatus) return;
         const isConnected = Boolean(meta.connected);
+        const isGlobal = Boolean(meta.global);
         leaderboardStatus.classList.remove("online", "local");
-        if (isConnected) {
-          leaderboardStatus.textContent = "Realtime: live on this browser (tabs sync)";
+        if (isConnected && isGlobal) {
+          leaderboardStatus.textContent = "Realtime: global leaderboard connected";
           leaderboardStatus.classList.add("online");
+        } else if (isConnected) {
+          leaderboardStatus.textContent = "Realtime: local fallback (set KV for global)";
+          leaderboardStatus.classList.add("local");
         } else {
           leaderboardStatus.textContent = "Realtime: offline";
           leaderboardStatus.classList.add("local");

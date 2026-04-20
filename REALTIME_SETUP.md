@@ -1,14 +1,21 @@
-# Realtime Leaderboard (Simple)
+# Global Realtime Leaderboard (Vercel)
 
-No backend and no API call.
+This project uses [`/api/leaderboard`](./api/leaderboard.js).
 
-How it works:
+To make leaderboard global across devices, add Vercel KV (Upstash Redis) env vars:
 
-- Saves attempts in `localStorage`
-- Syncs instantly between opened tabs using `BroadcastChannel`
-- Also syncs via `storage` event
+- `KV_REST_API_URL`
+- `KV_REST_API_TOKEN`
 
-This means:
+## Steps
 
-- Stable and no API errors
-- Realtime on the same browser/device tabs
+1. In Vercel dashboard, add **KV** (Upstash integration) to this project.
+2. Confirm environment variables are available in the project.
+3. Redeploy.
+
+After deploy:
+
+- Status becomes `Realtime: global leaderboard connected`
+- All devices see shared leaderboard updates
+
+If KV is missing/unavailable, app auto-falls back to local mode (no crash, no API popup errors).
