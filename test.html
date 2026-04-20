@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiniTest — Indefinite Pronouns Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="logo-link"><h1 class="logo">✨ MiniTest</h1></a>
+    <div class="topbar-actions">
+      <button id="themeToggle" class="icon-btn theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+        <span id="themeToggleIcon">🌙</span>
+      </button>
+      <button id="settingsToggle" class="icon-btn" title="Settings" aria-label="Open settings">⚙️</button>
+    </div>
+  </header>
+
+  <aside id="settingsPanel" class="settings-panel hidden" aria-hidden="true">
+    <div class="settings-header">
+      <h2>⚙️ Settings</h2>
+      <button id="closeSettings" class="icon-btn" title="Close settings" aria-label="Close settings">✕</button>
+    </div>
+    <div class="settings">
+      <div class="field">
+        <label for="fontSize">Font size</label>
+        <div class="row">
+          <input id="fontSize" type="range" min="13" max="24" step="1" />
+          <span id="fontSizeValue" class="value">16px</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fontFamily">Font style</label>
+        <select id="fontFamily">
+          <option value="system-ui, sans-serif">System Sans</option>
+          <option value="'Segoe UI', Tahoma, sans-serif">Segoe UI</option>
+          <option value="-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif">iOS style</option>
+          <option value="Georgia, 'Times New Roman', serif">Georgia</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Theme</label>
+        <div class="ios-switch-row">
+          <span>Light / Dark</span>
+          <label class="ios-switch" for="themeSwitch">
+            <input id="themeSwitch" type="checkbox" />
+            <span class="ios-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="quizDuration">Timer</label>
+        <select id="quizDuration">
+          <option value="50">50 minutes (default)</option>
+          <option value="60">60 minutes</option>
+        </select>
+      </div>
+      <button id="resetBtn" class="btn ghost">♻️ Reset Settings</button>
+    </div>
+  </aside>
+
+  <main class="container">
+    <section id="prestartCard" class="card">
+      <h2>📋 Test Review (before start)</h2>
+      <p class="muted">
+        You can review all 50 questions now. To answer any question, press <strong>Start Test</strong> first.
+      </p>
+      <div class="quiz-meta">
+        <span id="durationBadge" class="pill">Time: 50 min</span>
+        <span class="pill">Topic: Indefinite Pronouns</span>
+      </div>
+      <div id="questionPreview" class="preview-list"></div>
+      <div class="actions">
+        <button id="startBtn" class="btn primary"><span class="btn-icon">▶️</span> Start Test</button>
+        <a href="index.html" class="btn ghost"><span class="btn-icon">⬅️</span> Back</a>
+      </div>
+    </section>
+
+    <section id="quizCard" class="card quiz-card hidden">
+      <div class="quiz-header">
+        <span id="progress" class="progress">Question 1 / 50</span>
+        <span id="timer" class="timer">50:00</span>
+      </div>
+      <div id="questionTrack" class="question-track"></div>
+
+      <h2 id="questionText" class="question">Loading…</h2>
+      <p id="questionDifficulty" class="muted"></p>
+
+      <ul id="optionsList" class="options"></ul>
+      <div id="textAnswerWrap" class="hidden">
+        <label for="textAnswerInput" class="small-label">Type your answer</label>
+        <input id="textAnswerInput" class="text-input" type="text" autocomplete="off" />
+      </div>
+
+      <div class="actions">
+        <button id="prevBtn" class="btn ghost"><span class="btn-icon">⬅️</span> Previous</button>
+        <button id="nextBtn" class="btn primary">Next <span class="btn-icon">➡️</span></button>
+      </div>
+    </section>
+
+    <section id="resultCard" class="card hidden">
+      <h2>🎯 Your Score</h2>
+      <p id="scoreText" class="score"></p>
+      <p id="resultMeta" class="muted"></p>
+      <div class="actions">
+        <a href="test.html" class="btn primary"><span class="btn-icon">🔁</span> Retry</a>
+        <a href="index.html" class="btn ghost"><span class="btn-icon">🏠</span> Home</a>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-taskbar" aria-label="Quick actions">
+    <a href="index.html" class="task-item"><span class="task-ico">🏠</span> Home</a>
+    <button id="taskSettingsBtn" class="task-item" type="button"><span class="task-ico">⚙️</span> Settings</button>
+    <div class="task-item task-theme">
+      <span><span class="task-ico">🌗</span> Theme</span>
+      <label class="ios-switch mini" for="taskThemeSwitch">
+        <input id="taskThemeSwitch" type="checkbox" />
+        <span class="ios-slider"></span>
+      </label>
+    </div>
+  </nav>
+
+  <script src="settings.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>

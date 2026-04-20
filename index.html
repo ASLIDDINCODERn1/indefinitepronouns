@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MiniTest — Indefinite Pronouns</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1 class="logo">✨ MiniTest</h1>
+    <div class="topbar-actions">
+      <button id="themeToggle" class="icon-btn theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+        <span id="themeToggleIcon">🌙</span>
+      </button>
+      <button id="settingsToggle" class="icon-btn" title="Settings" aria-label="Open settings">⚙️</button>
+    </div>
+  </header>
+
+  <aside id="settingsPanel" class="settings-panel hidden" aria-hidden="true">
+    <div class="settings-header">
+      <h2>⚙️ Settings</h2>
+      <button id="closeSettings" class="icon-btn" title="Close settings" aria-label="Close settings">✕</button>
+    </div>
+    <div class="settings">
+      <div class="field">
+        <label for="fontSize">Font size</label>
+        <div class="row">
+          <input id="fontSize" type="range" min="13" max="24" step="1" />
+          <span id="fontSizeValue" class="value">16px</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="fontFamily">Font style</label>
+        <select id="fontFamily">
+          <option value="system-ui, sans-serif">System Sans</option>
+          <option value="'Segoe UI', Tahoma, sans-serif">Segoe UI</option>
+          <option value="-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif">iOS style</option>
+          <option value="Georgia, 'Times New Roman', serif">Georgia</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Theme</label>
+        <div class="ios-switch-row">
+          <span>Light / Dark</span>
+          <label class="ios-switch" for="themeSwitch">
+            <input id="themeSwitch" type="checkbox" />
+            <span class="ios-slider"></span>
+          </label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="quizDuration">Timer</label>
+        <select id="quizDuration">
+          <option value="50">50 minutes (default)</option>
+          <option value="60">60 minutes</option>
+        </select>
+      </div>
+      <button id="resetBtn" class="btn ghost">♻️ Reset Settings</button>
+    </div>
+  </aside>
+
+  <main class="container">
+    <section class="card hero-card">
+      <p class="chip">📘 English Grammar Challenge</p>
+      <h2>🧠 Indefinite Pronouns Test</h2>
+      <p class="muted">
+        50 questions, increasing difficulty, mixed formats (multiple choice + typing).
+        Timer is 50 minutes by default and can be changed to 60 minutes in settings.
+      </p>
+      <div class="actions">
+        <a href="test.html" class="btn primary"><span class="btn-icon">🚀</span> Go to Test</a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>🏆 Leaderboard</h3>
+      <p class="muted">Each attempt is saved separately with username, score, and finish time.</p>
+      <div id="leaderboardList" class="leaderboard-list"></div>
+    </section>
+  </main>
+
+  <div id="usernameModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="usernameTitle">
+    <div class="modal-card">
+      <h3 id="usernameTitle">👋 Welcome to MiniTest</h3>
+      <p class="muted">Please enter your username to continue.</p>
+      <input id="usernameInput" class="text-input" type="text" maxlength="24" placeholder="e.g. Dilshod" />
+      <div class="actions">
+        <button id="saveUsernameBtn" class="btn primary"><span class="btn-icon">✅</span> Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-taskbar" aria-label="Quick actions">
+    <a href="test.html" class="task-item active"><span class="task-ico">📝</span> Test</a>
+    <button id="taskSettingsBtn" class="task-item" type="button"><span class="task-ico">⚙️</span> Settings</button>
+    <div class="task-item task-theme">
+      <span><span class="task-ico">🌗</span> Theme</span>
+      <label class="ios-switch mini" for="taskThemeSwitch">
+        <input id="taskThemeSwitch" type="checkbox" />
+        <span class="ios-slider"></span>
+      </label>
+    </div>
+  </nav>
+
+  <script src="settings.js"></script>
+</body>
+</html>
